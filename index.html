@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Rollout Data — Expert Training Data</title>
+<meta name="description" content="Expert-labelled, rights-cleared training data for frontier labs. A named licence, a provenance trail and an annotator credential on every record.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@500&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Sans:wght@400;500&family=IBM+Plex+Serif:wght@400&display=swap" rel="stylesheet">
+<style>
+/* ─────────────────────────────────────────────────────────────
+   Paper, graphite, two signals. Blue marks annotation and nothing
+   else. Amber appears only inside an instrument, only where
+   annotators disagreed or a value was flagged.
+   ───────────────────────────────────────────────────────────── */
+:root{
+  --paper:#FBFBF9;
+  --ink:#1F2328;
+  --mid:#555B60;
+  --blue:#0F3BD8;
+  --amber:#B4540A;
+  --dark:#0B0C0E;
+  --rule:rgba(31,35,40,.24);
+  --hair:rgba(31,35,40,.14);
+  --pad:72px;
+  --labcol:216px;
+  --labgap:0;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  font-size:17px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;
+  hanging-punctuation:first;
+}
+::selection{background:var(--blue);color:var(--paper)}
+p{margin:0;max-width:56ch}
+a{color:var(--ink)}
+a:focus-visible{outline:2px solid var(--blue);outline-offset:4px}
+
+.mono{
+  font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;
+  font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);
+}
+.fig{
+  font-family:'IBM Plex Sans Condensed','IBM Plex Sans',sans-serif;font-weight:600;
+  font-variant-numeric:tabular-nums;font-feature-settings:"tnum" 1;
+  letter-spacing:-.03em;line-height:.84;
+}
+.tag{
+  font-family:'IBM Plex Mono',ui-monospace,monospace;font-weight:500;
+  font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mid);
+}
+
+/* three-tier rhythm: 96 tight · 160 normal · 240 major */
+.beat{padding:44px var(--pad)}
+
+.beat.lab{
+  display:grid;grid-template-columns:var(--labcol) minmax(0,1fr);
+  column-gap:0;align-items:start;
+}
+.beat.lab > .name{grid-column:1;margin:0;padding-top:6px}
+.beat.lab > *:not(.name){grid-column:2}
+.beat.lab > * + *:not(.name){margin-top:28px}
+
+/* ── masthead ──────────────────────────────────────────────── */
+.mast{display:flex;justify-content:space-between;align-items:baseline;gap:24px;padding:30px var(--pad) 0}
+.mast b{
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;
+  letter-spacing:.26em;text-transform:uppercase;color:var(--ink);
+}
+.mast a{
+  font-size:16px;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:4px;
+  text-decoration-color:var(--rule);
+}
+.mast a:hover{text-decoration-color:var(--blue)}
+
+/* ── 01 hero ───────────────────────────────────────────────── */
+.hero{
+  padding-top:48px;padding-bottom:64px;
+  display:grid;grid-template-columns:var(--labcol) minmax(0,1fr);column-gap:0;
+}
+.hero > *{grid-column:2}
+.hero h1{
+  font-weight:500;font-size:clamp(36px,5.66vw,82px);line-height:.98;
+  letter-spacing:-.028em;margin:0;
+}
+.hero-sent{margin-top:36px;font-size:18px;line-height:1.5;max-width:62ch;color:var(--mid)}
+.hero-sent b{font-weight:400;color:var(--ink)}
+.hero-figs{display:flex;gap:0;margin-top:56px;flex-wrap:wrap}
+.hero-fig{flex:0 1 auto;padding-right:52px}
+.hero-fig + .hero-fig{border-left:1px solid var(--rule);padding-left:52px}
+.hero-fig .fig{font-size:clamp(56px,6.6vw,92px);display:block}
+.hero-fig .mono{display:block;margin-top:20px;max-width:20ch}
+.hero-mail{
+  display:inline-block;margin-top:48px;font-size:28px;letter-spacing:-.01em;
+  text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:6px;
+  text-decoration-color:var(--rule);
+}
+.hero-mail:hover{text-decoration-color:var(--blue)}
+/* the one photograph: edge to edge, the dark record rises out of it */
+.rig{margin:0;display:block}
+.rig img{
+  display:block;width:100%;height:clamp(220px,24vw,348px);
+  object-fit:cover;object-position:38% 52%;filter:saturate(.22) contrast(1.06);
+}
+
+/* ── 02 the record ─────────────────────────────────────────── */
+.record{
+  background:var(--dark);color:var(--paper);padding:76px var(--pad) 84px;
+  display:grid;grid-template-columns:var(--labcol) minmax(0,1fr);align-items:start;
+}
+.record > *{grid-column:2}
+.record > .mono:first-child{grid-column:1;grid-row:1}
+.record > .rec-head{grid-row:1}
+.record .mono{color:#9AA0A6}
+.rec-head{
+  display:flex;flex-wrap:wrap;gap:0 10px;margin:4px 0 0;padding-bottom:22px;
+  border-bottom:1px solid rgba(251,251,249,.2);
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.07em;color:#9AA0A6;
+}
+.rec-head b{color:var(--paper);font-weight:500}
+.rec-meta{display:flex;gap:80px;flex-wrap:wrap;margin:24px 0 52px}
+.rec-meta dt{margin:0 0 8px}
+.rec-meta dd{margin:0;font-size:17px}
+.rec-cols{display:grid;grid-template-columns:minmax(0,440px) minmax(0,190px) minmax(0,360px);gap:0 45px;justify-content:start}
+.rec-body{
+  font-family:'IBM Plex Serif',Georgia,serif;font-weight:400;
+  font-size:21px;line-height:1.58;max-width:44ch;color:var(--paper);
+}
+.rec-body mark{
+  background:none;color:var(--paper);
+  text-decoration:underline 1.5px #C4671A;text-underline-offset:4px;text-decoration-skip-ink:none;
+}
+.rec-body sup{
+  font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:500;
+  color:var(--paper);vertical-align:super;line-height:0;margin-left:4px;
+}
+.rec-notes{border-left:1px solid rgba(251,251,249,.2);padding-left:56px}
+.rec-notes ul{margin:0;padding:0}
+.rec-notes li{
+  list-style:none;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;
+  letter-spacing:.05em;color:#C9CDD1;padding:0 0 16px;
+}
+.rec-notes li i{color:var(--paper);font-style:normal;margin-right:12px}
+.rec-foot{
+  margin-top:56px;padding-top:14px;border-top:1px solid rgba(251,251,249,.13);
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.05em;color:#C9CDD1;
+}
+
+/* the note as a silhouette: real line variance, PHI struck out */
+.doc{background:var(--paper);padding:20px 18px 24px;display:flex;flex-direction:column;gap:11px}
+.doc .hdr{display:flex;justify-content:space-between;height:auto;padding-bottom:9px;margin-bottom:6px;border-bottom:1px solid rgba(31,35,40,.3)}
+.doc .hdr em{
+  font-style:normal;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;
+  letter-spacing:.04em;color:rgba(31,35,40,.62);
+}
+.doc span{position:relative;align-items:center}
+.doc span b{
+  margin-left:10px;white-space:nowrap;line-height:1;
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--amber);
+}
+.doc span{display:flex;gap:7px;height:5px}
+.doc span i{display:block;height:5px;background:rgba(31,35,40,.28);width:var(--w)}
+.doc span i.r{background:var(--ink);height:9px;margin-top:-2px}
+.doc .box{border:1px solid var(--ink);padding:5px;margin:7px 0;display:block;height:auto}
+.doc .box i{display:block;height:16px;background:var(--ink);width:78%}
+
+/* provenance chain: dated nodes spaced by elapsed days */
+.chain{margin-top:56px}
+.chain ol{position:relative;list-style:none;margin:0;padding:34px 0 0;height:104px}
+.chain ol::before{content:"";position:absolute;top:0;left:0;right:0;height:1px;background:rgba(251,251,249,.26)}
+.chain li{position:absolute;top:0;left:var(--x);width:138px;padding-top:24px}
+.chain li.last{left:auto;right:0;text-align:right}
+.chain li i{position:absolute;top:-4px;left:0;width:9px;height:9px;background:var(--paper)}
+.chain li.last i{left:auto;right:0}
+.chain li b,.chain li span,.chain li em,.chain li u{
+  display:block;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;
+  letter-spacing:.06em;text-decoration:none;font-style:normal;
+}
+.chain li b{color:var(--paper)}
+.chain li span{color:#C9CDD1;margin-top:5px}
+.chain li em{color:#8A9095;margin-top:5px}
+.chain li.branch u{
+  position:absolute;top:96px;left:0;white-space:nowrap;color:#8A9095;
+}
+.chain li.branch::after{content:"";position:absolute;top:0;left:4px;width:1px;height:92px;background:rgba(251,251,249,.26)}
+
+/* ── 03 coverage: log axis, floor 10^3 ─────────────────────── */
+.chart{padding-top:48px;padding-bottom:0}
+.chartwrap{display:grid;grid-template-columns:62px minmax(0,1fr);gap:0;margin-top:112px}
+.axis{position:relative}
+.axis span{
+  position:absolute;bottom:calc(var(--y) - 8px);left:0;
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.06em;color:var(--mid);
+}
+.plot{display:flex;align-items:flex-end;gap:8px;border-bottom:1px solid var(--ink);height:360px;position:relative}
+.plot .gl{position:absolute;left:0;right:0;bottom:var(--y);height:1px;background:var(--hair)}
+.step{flex:1 1 0;min-width:0;height:calc(var(--n) * 348px);background:var(--ink);position:relative}
+.step .cap{position:absolute;bottom:100%;left:0;padding:0 16px 14px 0}
+.step .val{display:block;font-size:26px;letter-spacing:-.02em}
+.step:last-child .val{font-size:46px;letter-spacing:-.03em}
+.step .who{display:block;margin-top:8px;max-width:17ch}
+.chart-cap{display:block;margin-top:16px;padding-left:62px}
+
+/* ── 04 units ──────────────────────────────────────────────── */
+.unit{
+  display:grid;grid-template-columns:minmax(0,320px) minmax(0,1fr);
+  gap:0 56px;align-items:baseline;padding:36px 0;border-top:1px solid var(--rule);
+}
+.unit:last-child{border-bottom:1px solid var(--rule)}
+.unit h3{font-weight:500;font-size:28px;line-height:1.1;letter-spacing:-.018em;margin:0}
+.unit p{max-width:46ch}
+
+/* ── 05 elapsed ────────────────────────────────────────────── */
+.ruler{position:relative;margin-top:8px;padding-top:52px;min-height:196px}
+.ruler-line{position:absolute;top:0;left:0;right:0;height:1px;background:var(--ink)}
+.mark{position:absolute;top:0;left:var(--x);width:min(250px,24%);padding-right:36px}
+.mark::before{content:"";position:absolute;top:0;left:0;width:1px;height:18px;background:var(--ink)}
+.mark b{display:block;padding-top:30px;font-size:30px;letter-spacing:-.02em;font-weight:500}
+.mark b .fig{display:inline;font-size:30px}
+.mark .mono{display:block;margin-top:6px}
+.mark p{margin-top:16px;max-width:24ch;hyphens:none}
+
+/* ── 06 five gates: four rows, four shapes ─────────────────── */
+.gates{padding-left:0;padding-right:0}
+.gates-head{
+  margin:0 var(--pad) 32px;padding-left:var(--labcol);
+  font-weight:500;font-size:32px;line-height:1.1;letter-spacing:-.02em;
+}
+.grow{padding:34px var(--pad) 42px;border-top:1px solid var(--rule)}
+.gates .grow:last-child{border-bottom:1px solid var(--rule)}
+.grow h4{font-weight:400;font-size:23px;line-height:1.18;letter-spacing:-.014em;margin:0 0 14px}
+.grow .mono{color:rgba(31,35,40,.6);letter-spacing:.07em}
+.grow .art{margin-top:28px}
+
+.grow--wide,.grow--doc{display:grid;grid-template-columns:var(--labcol) minmax(0,1fr);column-gap:0}
+.grow--bleed{display:block;padding-left:0;padding-right:0}
+.grow--bleed > .grow-head{margin:0 var(--pad) 0 calc(var(--pad) + var(--labcol))}
+.grow--bleed > .bleed{margin:0}
+.grow--wide > *,.grow--doc > *{grid-column:2}
+.grow--wide > .grow-head,.grow--doc > .grow-head{grid-column:1;display:block}
+.grow-head .mono{display:block;margin-top:10px}
+
+.grow-head{display:flex;align-items:baseline;gap:28px;flex-wrap:wrap}
+.grow-head h4{margin:0}
+.bleed{margin-left:calc(-1 * var(--pad));margin-right:calc(-1 * var(--pad))}
+.grow .art svg{display:block;width:100%;height:auto;overflow:visible}
+.wv{height:116px}
+
+/* agreement matrix — symmetric, diagonal empty, values printed */
+.mx-wrap{display:grid;grid-template-columns:minmax(0,420px) minmax(0,1fr);gap:0 56px;align-items:end}
+.matrix{display:grid;grid-template-columns:36px repeat(5,minmax(0,1fr));gap:5px;width:100%}
+.matrix b,.matrix u{
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.06em;
+  color:var(--mid);text-decoration:none;display:flex;align-items:center;justify-content:center;
+}
+.matrix u{justify-content:flex-end;padding-right:10px}
+.matrix i{
+  display:flex;align-items:center;justify-content:center;aspect-ratio:1;
+  background:rgba(31,35,40,var(--a,.1));font-style:normal;
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.02em;color:var(--ink);
+}
+.matrix i.lt{color:var(--paper)}
+.matrix i.dg{background:none;border:1px solid var(--hair)}
+.matrix i.adj{background:var(--amber)}
+.mx-foot{width:100%;padding-bottom:6px}
+.ramp{display:flex}
+.ramp i{display:block;flex:1 1 0;height:13px;background:rgba(31,35,40,var(--a))}
+.ramp-row{display:flex;justify-content:space-between;margin-top:7px}
+.mx-foot p{margin-top:14px}
+
+/* diff */
+.diff{
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;line-height:1.85;
+  border-top:1px solid var(--ink);border-bottom:1px solid var(--hair);padding:14px 0;
+  overflow-x:auto;
+}
+.diff div{white-space:pre;color:var(--ink)}
+.diff div s{display:inline-block;width:30px;text-align:right;padding-right:10px;text-decoration:none;color:rgba(31,35,40,.42)}
+.diff div s.sg{width:18px;text-align:left;padding-right:0;color:var(--mid)}
+.diff .meta,.diff .hunk{color:var(--mid)}
+.diff .hunk{padding:4px 0 6px}
+.diff div.del{color:var(--mid)}
+.diff div.ctx{color:var(--mid)}
+.cred{display:block;margin-top:8px}
+.diff mark{background:none;color:inherit;text-decoration:underline 1.5px var(--amber);text-underline-offset:4px;text-decoration-skip-ink:none}
+.diff sup{color:var(--ink);font-size:11px;vertical-align:super;line-height:0;margin-left:3px}
+.notes{margin-top:14px;display:grid;gap:7px}
+.notes span{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.06em;color:var(--mid)}
+.notes span i{color:var(--ink);font-style:normal;margin-right:10px}
+
+/* waveform */
+.wave-words{display:flex;margin-top:8px;border-top:1px solid var(--ink)}
+.wave-words span{
+  flex:0 0 var(--w);min-width:0;padding:10px 8px 0 8px;border-right:1px solid var(--hair);
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.04em;color:var(--ink);
+}
+.wave-words span:last-child{border-right:0}
+.wave-words span b{display:block;font-weight:500}
+.wave-words span em{display:block;font-style:normal;color:var(--mid);margin-top:6px;font-size:11px}
+.wave-words span.over b,.wave-words span.over em{color:var(--amber)}
+
+/* trajectory: geometry in SVG, type in HTML so labels never scale */
+.traj-wrap{position:relative}
+.traj-wrap svg{display:block;width:100%;height:auto;overflow:visible}
+.tl{
+  position:absolute;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;
+  letter-spacing:.08em;text-transform:uppercase;color:var(--mid);pointer-events:none;
+}
+.t0{top:calc(32% - 20px);left:2%}
+.t1{top:calc(19% - 20px);left:29%}
+.t2{top:calc(54% - 20px);left:29%}
+.t3{top:calc(77% - 20px);left:29%}
+.grasp{top:calc(17% - 19px);left:64.5%;color:var(--ink)}
+.traj-axis{
+  display:flex;justify-content:space-between;margin-top:10px;padding-left:29%;
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;
+  letter-spacing:.08em;color:var(--mid);
+}
+
+/* clause map */
+.cmap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,340px);gap:0 72px;align-items:start}
+.cpage{border:1px solid var(--ink);padding:24px 22px}
+.crow{display:grid;grid-template-columns:46px minmax(0,1fr);gap:0 18px;align-items:center;min-height:14px}
+.crow + .crow{margin-top:9px}
+.crow.hdr{margin:0 0 14px;padding-bottom:9px;border-bottom:1px solid var(--rule)}
+.crow.hdr .cl{justify-content:space-between}
+.crow.hdr em{
+  font-style:normal;font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;
+  letter-spacing:.04em;color:var(--mid);
+}
+.crow.gap{min-height:0;margin-top:18px}
+.crow b{font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.06em;color:var(--mid);text-align:right}
+.crow .cl{display:flex;gap:8px}
+.crow .cl i{display:block;height:5px;background:rgba(31,35,40,.26);width:var(--w)}
+.crow .cl i.r{background:var(--ink);height:8px}
+.crow.lv2 .cl i:first-child{background:rgba(31,35,40,.62)}
+.crow.lv3 .cl i:first-child{background:var(--amber)}
+.cindex{border-top:1px solid var(--ink)}
+.cindex div{
+  display:grid;grid-template-columns:52px minmax(0,1fr) auto;gap:0 14px;align-items:baseline;
+  padding:15px 0;border-bottom:1px solid var(--hair);
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:12px;letter-spacing:.06em;
+  text-transform:uppercase;color:var(--ink);
+}
+.cindex em{font-style:normal;color:var(--mid);display:flex;align-items:center;gap:9px}
+.cindex em::before{content:"";width:10px;height:10px;background:var(--band,rgba(31,35,40,.26))}
+
+/* ── 07 bench + rates ──────────────────────────────────────── */
+.rates{width:100%;border-collapse:collapse;margin-top:18px}
+.rates td{padding:17px 0;border-bottom:1px solid var(--hair);vertical-align:baseline}
+.rates tr:first-child td{border-top:1px solid var(--ink)}
+.rates tr.grp td{padding:34px 0 16px;border-bottom:1px solid var(--ink)}
+.rates tr.grp:first-child td{padding-top:0;border-top:0}
+.rates tr.grp b{font-weight:500;font-size:24px;letter-spacing:-.018em;display:inline-block}
+.rates tr.grp em{
+  font-style:normal;margin-left:20px;font-family:'IBM Plex Mono',monospace;font-weight:500;
+  font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--mid);
+}
+.rates tr.grp > td > span{display:block;margin-top:10px;color:var(--mid);max-width:58ch;font-size:16px}
+.rates tr.grp span span{display:inline;white-space:nowrap}
+.rates td.r.q{font-variant-numeric:normal;color:var(--mid)}
+.rates td.u{
+  font-family:'IBM Plex Mono',monospace;font-weight:500;font-size:11px;letter-spacing:.05em;
+  text-transform:uppercase;color:var(--mid);
+}
+.rates td.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+
+/* ── 08 ownership: the closing beat ────────────────────────── */
+.own{
+  background:var(--dark);color:var(--paper);padding:76px var(--pad) 84px;
+  display:grid;grid-template-columns:var(--labcol) minmax(0,1fr);column-gap:0;
+}
+.own > *{grid-column:2}
+.own .fig{display:block;font-size:clamp(104px,10.6vw,156px)}
+.own .mono{display:block;margin-top:26px;color:#9AA0A6}
+.own p{margin-top:34px;max-width:40ch;color:var(--paper)}
+.foot{
+  display:flex;justify-content:space-between;align-items:baseline;gap:32px;flex-wrap:wrap;
+  padding:34px var(--pad) 72px;
+}
+.foot a{text-decoration:none;border-bottom:1px solid var(--rule)}
+.foot a:hover{border-bottom-color:var(--blue)}
+
+/* ── tablet ────────────────────────────────────────────────── */
+@media (min-width:760px) and (max-width:1120px){
+  :root{--pad:48px;--labcol:120px;--labgap:40px}
+  .hero-row{grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:0 48px}
+  .hero-row{grid-template-columns:minmax(0,1fr) minmax(0,420px);gap:0 48px}
+  .cmap{grid-template-columns:minmax(0,250px) minmax(0,1fr);gap:0 32px}
+  .rec-cols{grid-template-columns:minmax(0,1fr) minmax(0,200px);gap:0 36px}
+  .doc-col{grid-column:1/-1;margin-top:40px;max-width:190px}
+}
+
+/* ── phone ─────────────────────────────────────────────────── */
+@media (max-width:759px){
+  :root{--pad:24px;--labcol:0px}
+  body{font-size:16px}
+  .beat{padding:56px var(--pad)}
+
+  .beat.lab,.hero,.own{display:block}
+  .beat.lab > .name{padding-top:0}
+  .beat.lab > * + *:not(.name){margin-top:32px}
+  .beat.lab > .name + *{margin-top:26px}
+  .mast{padding:22px var(--pad) 0}
+  .mast a{font-size:15px}
+  .hero{padding-top:40px;padding-bottom:56px;display:block}
+  .hero h1{max-width:none;letter-spacing:-.018em}
+  .hero-sent{max-width:none;margin-top:30px}
+  .hero-figs{display:block;margin-top:44px}
+  .hero-fig{padding:0}
+  .hero-fig + .hero-fig{border-left:0;border-top:1px solid var(--rule);padding:26px 0 0;margin-top:26px}
+  .hero-mail{margin-top:40px;font-size:22px}
+
+  .record{display:block}
+  .record{padding:64px var(--pad) 72px}
+  .rec-meta{gap:24px;display:grid;margin-bottom:44px}
+  .rec-cols{grid-template-columns:1fr;gap:0}
+  .rec-body{font-size:19px;max-width:none}
+  .rec-notes{border-left:0;border-top:1px solid rgba(251,251,249,.2);padding:26px 0 0;margin-top:34px}
+  .doc-col{margin-top:34px;max-width:170px}
+  .chain ol{height:auto;padding:0}
+  .chain ol::before{display:none}
+  .chain li,.chain li.last{position:static;width:auto;text-align:left;padding:0 0 22px 24px;border-left:1px solid rgba(251,251,249,.26);margin-left:4px}
+  .chain li i{top:0;left:-4px}
+  .chain li.last i{left:-4px;right:auto}
+  .chain li.branch::after{display:none}
+  .chain li.branch u{position:static;display:block;margin-top:5px;white-space:normal}
+  .chain li b{display:inline-block;width:64px}
+  .chain li span{display:inline-block;margin-top:0}
+  .chart{padding-top:56px;padding-bottom:72px}
+  .chartwrap{display:block;margin-top:0}
+  .axis{display:none}
+  .plot{display:block;height:auto;border-bottom:0}
+  .plot .gl{display:none}
+  .chart-cap{padding-left:0;margin-top:28px}
+  .step{height:auto;background:none;padding:0 0 18px;margin-top:24px;border-bottom:1px solid var(--hair)}
+  .step + .step{border-left:0}
+  .step .cap{position:static;padding:0}
+  .step .val,.step:last-child .val{font-size:26px}
+  .step .who{margin-top:4px;max-width:none}
+  .step::after{content:"";display:block;height:10px;background:var(--ink);width:calc(var(--n) * 100%);margin-top:16px}
+  .unit{grid-template-columns:1fr;gap:14px 0;padding:28px 0}
+  .unit p{max-width:none}
+  .ruler{padding-top:0;min-height:0;margin-top:0}
+  .ruler-line{display:none}
+  .mark{position:static;width:auto;padding:26px 0 0;border-top:1px solid var(--rule);margin-top:26px}
+  .mark::before{display:none}
+  .mark b{padding-top:0}
+  .mark p{max-width:none}
+  .gates-head{margin:0 var(--pad) 28px;padding-left:0;font-size:26px}
+  .grow{padding:40px var(--pad)}
+  .grow--wide,.grow--doc{display:block}
+  .grow--bleed > .grow-head{margin:0 var(--pad)}
+  .mx-wrap{grid-template-columns:1fr;gap:26px 0;align-items:start}
+  .grow--wide > *,.grow--doc > *{grid-column:auto}
+  .traj-axis{padding-left:0}
+  .wv{height:96px}
+  .rates tr.grp b{font-size:20px}
+  .grow h4{font-size:21px}
+  .grow .art{margin-top:28px}
+  .grow-head{display:block}
+  .grow-head .mono{display:block;margin-top:10px}
+  .matrix{grid-template-columns:28px repeat(5,minmax(0,1fr));gap:3px;width:auto}
+  .mx-foot{width:100%}
+  .matrix i{font-size:11px}
+  .cmap{grid-template-columns:1fr;gap:36px 0}
+  .cpage{padding:20px 16px}
+  .art-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px}
+  .art-scroll > *{min-width:520px}
+  .traj-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;padding-bottom:12px}
+  .traj-scroll > *{min-width:620px}
+  .t2{top:calc(56.5% - 15px)}
+  .t3{top:calc(79% - 15px)}
+  .rates{display:block}
+  .rates tbody,.rates tr,.rates td{display:block;width:100%}
+  .rates tr{border-bottom:1px solid var(--hair);padding:18px 0}
+  .rates tr:first-child td{border-top:0}
+  .rates td{border:0;padding:0}
+  .rates td.u{margin-top:6px}
+  .rates td.r{text-align:left;margin-top:8px;font-size:22px}
+  .own{padding:88px var(--pad) 96px}
+  .foot{padding-bottom:56px}
+}
+</style>
+</head>
+<body>
+
+<!-- ILLUSTRATIVE: swap before use ─────────────────────────────
+     EVERY delivery figure and contributor rate on this page is a
+     placeholder and must be replaced with audited numbers before
+     the page is shown to a lab. They are injected at runtime from
+     the JSON below onto the elements carrying a matching data-stat
+     key; the markup holds the same value so the page still renders
+     with scripting off. Edit HERE, not inline.
+     Coverage bar heights are --n on each .step (0-1, log scale) —
+     recompute them when the counts change.
+-->
+<script type="application/json" id="illustrative">
+{
+  "items_delivered":    "2.9M",
+  "unlicensed_records": "0",
+  "cov_clinical":       "1.42M",
+  "cov_audio":          "310K",
+  "cov_contracts":      "128K",
+  "cov_code":           "92K",
+  "cov_robotics":       "44K",
+  "calibration_pass":   "9%",
+  "eval_items":         "1,240",
+  "eval_refresh":       "90",
+  "pref_pairs":         "18K",
+  "severity_bands":     "5",
+  "cap_table_labs":     "0",
+  "rate_clinical":      "34.00",
+  "rate_code":          "48.00",
+  "rate_audio":         "2.40",
+  "rate_robotics":      "12.50",
+  "rate_contracts":     "9.00"
+}
+</script>
+
+<header class="mast">
+  <b>Rollout Data</b>
+  <span class="mono">Expert training data</span>
+</header>
+
+<!-- 01 ──────────────────────────────────────────────────────── -->
+<section class="beat hero">
+  <h1>Expert-labelled training data,<br>with a chain of title.</h1>
+  <p class="hero-sent"><b>Public text ran out. Credentials did not.</b> Clinical records, codebases, multilingual audio, robotics trajectories, contracts &mdash; every record with a named licence and the annotator&rsquo;s credential attached.</p>
+  <div class="hero-figs">
+    <div class="hero-fig">
+      <span class="fig" data-stat="items_delivered">2.9M</span>
+      <span class="mono">Expert-labelled items delivered</span>
+    </div>
+    <div class="hero-fig">
+      <span class="fig" data-stat="calibration_pass">9%</span>
+      <span class="mono">Of applicants clear the calibration set</span>
+    </div>
+  </div>
+  <a class="hero-mail" href="mailto:data@rolloutdata.com">data@rolloutdata.com</a>
+</section>
+
+<!-- 02 ──────────────────────────────────────────────────────── -->
+<section class="record">
+  <p class="mono">One record, unabridged</p>
+  <div class="rec-head">
+    <b>oncology_discharge_summaries</b><span>/</span><b>pass 2 of 3</b>
+  </div>
+  <dl class="rec-meta">
+    <div><dt class="mono">Annotator</dt><dd>MD, internal medicine, 9 yrs</dd></div>
+  </dl>
+  <div class="rec-cols">
+    <p class="rec-body">Patient is a 64-year-old presenting with persistent <mark>dyspnoea on exertion</mark><sup>1</sup> over six weeks. Started on <mark>carvedilol&nbsp;6.25&nbsp;mg&nbsp;BD</mark><sup>2</sup> after <mark>reduced ejection fraction</mark><sup>3</sup> was confirmed on echo. No chest pain reported. Plan: repeat echo in <mark>12&nbsp;weeks</mark><sup>4</sup>, titrate as tolerated.</p>
+    <div class="rec-notes">
+      <ul>
+        <li><i>1</i>Symptom, six-week onset</li>
+        <li><i>2</i>Drug, dose, frequency</li>
+        <li><i>3</i>Finding, confirmed on echo</li>
+        <li><i>4</i>Follow-up interval</li>
+      </ul>
+    </div>
+    <div class="doc-col">
+      <div class="doc" role="img" aria-label="The same note as a silhouette, with every protected-health-information span struck out before ingest and labelled by class.">
+          <span class="hdr"><em>oncology_discharge_summaries</em><em>p.&nbsp;1</em></span>
+          <span><i style="--w:38%"></i><i style="--w:26%"></i><i style="--w:22%"></i></span>
+          <span><i style="--w:30%"></i><i style="--w:18%"></i><i style="--w:44%"></i></span>
+          <span><i style="--w:24%"></i><i class="r" style="--w:20%"></i><i style="--w:30%"></i><b>Name</b></span>
+          <span><i style="--w:46%"></i><i style="--w:30%"></i></span>
+          <span><i style="--w:20%"></i><i style="--w:34%"></i><i style="--w:28%"></i></span>
+          <span><i class="r" style="--w:34%"></i><i style="--w:20%"></i><b>MRN</b></span>
+          <span><i style="--w:42%"></i><i style="--w:24%"></i><i style="--w:18%"></i></span>
+          <span class="box"><i></i><b>Address</b></span>
+          <span><i style="--w:28%"></i><i style="--w:40%"></i></span>
+          <span><i style="--w:22%"></i><i class="r" style="--w:16%"></i><i style="--w:32%"></i><b>DOB</b></span>
+          <span><i style="--w:36%"></i><i style="--w:28%"></i><i style="--w:22%"></i></span>
+          <span><i style="--w:30%"></i><i style="--w:46%"></i></span>
+          <span><i class="r" style="--w:26%"></i><i style="--w:26%"></i><b>Date</b></span>
+          <span><i style="--w:40%"></i><i style="--w:22%"></i><i style="--w:26%"></i></span>
+          <span><i style="--w:24%"></i><i style="--w:34%"></i></span>
+          <span><i style="--w:32%"></i><i style="--w:28%"></i><i style="--w:26%"></i></span>
+          <span><i style="--w:44%"></i><i style="--w:18%"></i></span>
+      </div>
+    </div>
+  </div>
+  <p class="rec-foot">spans marked 4 &middot; blind second pass agree &middot; adjudicated 1</p>
+  <div class="chain">
+    <ol>
+      <li style="--x:0%"><i></i><b>14 Jan</b><span>Source holder</span><em>MSA-0087</em></li>
+      <li style="--x:30%"><i></i><b>02 Feb</b><span>Licence executed</span><em>LIC-2291</em></li>
+      <li style="--x:46%"><i></i><b>12 Feb</b><span>DUA countersigned</span><em>DUA-2291-A</em></li>
+      <li style="--x:60%"><i></i><b>21 Feb</b><span>De-identified</span><em>DEID-4471</em></li>
+      <li class="branch" style="--x:78%"><i></i><b>05 Mar</b><span>Enclave opened</span><em>ENC-118</em><u>Keystroke audit KEY-118</u></li>
+      <li class="last"><i></i><b>19 Mar</b><span>Delivered</span><em>BATCH-4182</em></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 05 ──────────────────────────────────────────────────────── -->
+<section class="beat lab">
+  <div class="ruler">
+    <div class="ruler-line"></div>
+    <div class="mark" style="--x:0%">
+      <b><span class="fig">0</span></b>
+      <span class="mono">Day</span>
+      <p>Describe the failure, not the dataset.</p>
+    </div>
+    <div class="mark" style="--x:24%">
+      <b><span class="fig">48</span></b>
+      <span class="mono">Hours</span>
+      <p>Spec and quote, specialist rate on its own line.</p>
+    </div>
+    <div class="mark" style="--x:50%">
+      <b><span class="fig">7&#8211;14</span></b>
+      <span class="mono">Days</span>
+      <p>Pilot batch and quality report. Wrong spec re&#8209;runs free.</p>
+    </div>
+    <div class="mark" style="--x:76%">
+      <b>Ongoing</b>
+      <span class="mono">Delivery</span>
+      <p>Your bucket, your region, manifest attached.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 06 ──────────────────────────────────────────────────────── -->
+<section class="beat gates">
+  <h2 class="gates-head">Five domains, five gates</h2>
+
+  <div class="grow grow--wide">
+    <div class="grow-head">
+  <h4>Licensed clinical records</h4>
+        <span class="mono">Licence and DUA &middot; 1.42M clinical spans</span>
+    </div>
+      <div class="art mx-wrap">
+        <div class="matrix" role="img" aria-label="Symmetric five by five inter-annotator agreement matrix; the A3-A4 pair was adjudicated.">
+          <b></b><b>A1</b><b>A2</b><b>A3</b><b>A4</b><b>A5</b>
+          <u>A1</u><i class="dg"></i><i class="lt" style="--a:0.82">0.82</i><i class="lt" style="--a:0.78">0.78</i><i class="" style="--a:0.64">0.64</i><i class="lt" style="--a:0.71">0.71</i>
+          <u>A2</u><i class="lt" style="--a:0.82">0.82</i><i class="dg"></i><i class="lt" style="--a:0.86">0.86</i><i class="" style="--a:0.58">0.58</i><i class="lt" style="--a:0.69">0.69</i>
+          <u>A3</u><i class="lt" style="--a:0.78">0.78</i><i class="lt" style="--a:0.86">0.86</i><i class="dg"></i><i class="adj lt">0.41</i><i class="lt" style="--a:0.74">0.74</i>
+          <u>A4</u><i class="" style="--a:0.64">0.64</i><i class="" style="--a:0.58">0.58</i><i class="adj lt">0.41</i><i class="dg"></i><i class="" style="--a:0.62">0.62</i>
+          <u>A5</u><i class="lt" style="--a:0.71">0.71</i><i class="lt" style="--a:0.69">0.69</i><i class="lt" style="--a:0.74">0.74</i><i class="" style="--a:0.62">0.62</i><i class="dg"></i>
+        </div>
+        <div class="mx-foot">
+          <div class="ramp"><i style="--a:0.40"></i><i style="--a:0.55"></i><i style="--a:0.70"></i><i style="--a:0.85"></i><i style="--a:1"></i></div>
+          <div class="ramp-row tag"><span>0.40</span><span>1.00</span></div>
+          <p class="tag">Pairwise Cohen&rsquo;s &kappa; &middot; Fleiss &kappa; 0.69 overall &middot; A3&times;A4 adjudicated</p>
+        </div>
+      </div>
+  </div>
+
+  <div class="grow grow--wide">
+    <div class="grow-head">
+  <h4>Enterprise codebases</h4>
+        <span class="mono">NDA and enclave &middot; 92K reviewed diffs</span>
+        <span class="mono cred">Reviewer: staff engineer, 11 yrs, Go/TS</span>
+    </div>
+      <div class="art">
+        <div class="diff">
+          <div class="meta">--- a/internal/auth/admin.ts</div>
+          <div class="meta">+++ b/internal/auth/admin.ts</div>
+          <div class="hunk">@@ -12,3 +12,12 @@ export async function canAdmin(user: User) {</div>
+          <div class="ctx"><s>12</s><s>12</s><s class="sg"> </s>export async function canAdmin(user: User) {</div>
+          <div class="del"><s>13</s><s></s><s class="sg">&minus;</s>  if (user.role == 'admin') return true;</div>
+          <div><s></s><s>13</s><s class="sg">+</s>  if (user.role !== 'admin') return false;</div>
+          <div><s></s><s>14</s><s class="sg">+</s>  if (<mark>user.suspended</mark><sup>1</sup>) return false;</div>
+          <div><s></s><s>15</s><s class="sg">+</s></div>
+          <div><s></s><s>16</s><s class="sg">+</s>  await <mark>audit.write({</mark><sup>2</sup></div>
+          <div><s></s><s>17</s><s class="sg">+</s>    actor: user.id,</div>
+          <div><s></s><s>18</s><s class="sg">+</s>    action: 'admin.check',</div>
+          <div><s></s><s>19</s><s class="sg">+</s>    at: Date.now(),</div>
+          <div><s></s><s>20</s><s class="sg">+</s>  });</div>
+          <div><s></s><s>21</s><s class="sg">+</s></div>
+          <div><s></s><s>22</s><s class="sg">+</s>  return true;</div>
+          <div class="ctx"><s>14</s><s>23</s><s class="sg"> </s>}</div>
+        </div>
+        <div class="notes">
+          <span><i>1</i>Auth bypass, severity 3</span>
+          <span><i>2</i>Audit write on the allow path</span>
+        </div>
+      </div>
+  </div>
+
+  <div class="grow grow--bleed">
+    <div class="grow-head">
+      <h4>Multilingual audio</h4>
+      <span class="mono">Consented speakers &middot; 310K minutes, es-MX</span>
+    </div>
+    <div class="art art-scroll bleed">
+      <div>
+        <svg viewBox="0 0 1200 100" preserveAspectRatio="none" class="wv" role="img" aria-label="Amplitude envelope of a 2.204 second utterance, word-aligned, with a noise-floor pause and an overlapping-speech region marked.">
+          <path d="M0.0 50.0 L2.3 44.0 L4.6 42.1 L6.9 39.4 L9.2 38.2 L11.6 34.2 L13.9 33.4 L16.2 26.3 L18.5 30.4 L20.8 26.5 L23.1 18.7 L25.4 21.0 L27.7 17.6 L30.1 24.2 L32.4 21.3 L34.7 21.8 L37.0 18.7 L39.3 8.5 L41.6 22.8 L43.9 14.3 L46.2 17.9 L48.6 15.7 L50.9 21.4 L53.2 12.4 L55.5 10.0 L57.8 14.1 L60.1 17.3 L62.4 15.1 L64.7 11.5 L67.1 12.6 L69.4 2.4 L71.7 7.3 L74.0 13.6 L76.3 3.1 L78.6 13.6 L80.9 16.3 L83.2 9.5 L85.5 2.4 L87.9 12.9 L90.2 14.4 L92.5 15.9 L94.8 7.0 L97.1 12.7 L99.4 14.0 L101.7 9.7 L104.0 13.2 L106.4 16.9 L108.7 14.1 L111.0 14.4 L113.3 13.0 L115.6 14.4 L117.9 12.4 L120.2 15.8 L122.5 14.7 L124.9 26.3 L127.2 25.8 L129.5 22.7 L131.8 21.3 L134.1 25.7 L136.4 29.7 L138.7 29.7 L141.0 36.1 L143.4 32.0 L145.7 37.3 L148.0 39.7 L150.3 42.0 L152.6 45.5 L154.9 48.1 L157.2 42.8 L159.5 35.6 L161.8 36.0 L164.2 30.5 L166.5 34.7 L168.8 30.8 L171.1 17.6 L173.4 29.0 L175.7 29.2 L178.0 15.0 L180.3 22.6 L182.7 16.9 L185.0 18.4 L187.3 20.6 L189.6 18.0 L191.9 17.3 L194.2 18.4 L196.5 15.8 L198.8 19.0 L201.2 14.3 L203.5 22.6 L205.8 17.6 L208.1 22.9 L210.4 14.2 L212.7 13.5 L215.0 24.1 L217.3 23.3 L219.7 17.8 L222.0 23.0 L224.3 21.3 L226.6 29.0 L228.9 31.5 L231.2 35.6 L233.5 39.1 L235.8 43.4 L238.2 47.2 L240.5 39.4 L242.8 37.0 L245.1 36.1 L247.4 31.8 L249.7 22.9 L252.0 26.3 L254.3 21.3 L256.6 16.1 L259.0 20.7 L261.3 12.7 L263.6 5.7 L265.9 14.3 L268.2 13.7 L270.5 19.1 L272.8 11.0 L275.1 12.3 L277.5 9.3 L279.8 4.8 L282.1 8.8 L284.4 14.1 L286.7 8.7 L289.0 8.2 L291.3 3.7 L293.6 18.8 L296.0 9.4 L298.3 12.3 L300.6 15.4 L302.9 18.7 L305.2 15.9 L307.5 23.0 L309.8 22.5 L312.1 27.2 L314.5 29.5 L316.8 38.0 L319.1 41.7 L321.4 47.8 L323.7 45.1 L326.0 41.0 L328.3 39.0 L330.6 34.4 L332.9 33.8 L335.3 35.4 L337.6 30.6 L339.9 27.5 L342.2 26.6 L344.5 29.6 L346.8 27.6 L349.1 25.1 L351.4 28.6 L353.8 27.9 L356.1 19.8 L358.4 26.1 L360.7 28.8 L363.0 26.1 L365.3 22.4 L367.6 25.8 L369.9 24.4 L372.3 19.6 L374.6 30.5 L376.9 25.4 L379.2 31.5 L381.5 33.2 L383.8 31.7 L386.1 34.7 L388.4 33.6 L390.8 38.3 L393.1 33.9 L395.4 38.9 L397.7 41.0 L400.0 40.5 L402.3 45.3 L404.6 47.5 L406.9 44.2 L409.2 41.8 L411.6 38.1 L413.9 39.6 L416.2 36.1 L418.5 32.9 L420.8 34.0 L423.1 32.5 L425.4 31.7 L427.7 28.0 L430.1 22.5 L432.4 26.9 L434.7 22.2 L437.0 25.9 L439.3 27.5 L441.6 28.7 L443.9 18.6 L446.2 20.1 L448.6 21.7 L450.9 18.6 L453.2 16.3 L455.5 20.3 L457.8 19.3 L460.1 13.8 L462.4 22.4 L464.7 21.8 L467.1 18.6 L469.4 23.2 L471.7 15.9 L474.0 25.2 L476.3 9.2 L478.6 15.4 L480.9 21.9 L483.2 12.7 L485.5 19.2 L487.9 19.5 L490.2 23.6 L492.5 21.1 L494.8 24.9 L497.1 26.3 L499.4 21.6 L501.7 26.7 L504.0 23.2 L506.4 25.4 L508.7 30.5 L511.0 32.8 L513.3 27.8 L515.6 31.7 L517.9 34.3 L520.2 34.4 L522.5 37.7 L524.9 35.5 L527.2 40.3 L529.5 43.1 L531.8 44.7 L534.1 49.7 L536.4 47.6 L538.7 48.2 L541.0 47.4 L543.4 47.8 L545.7 48.1 L548.0 47.8 L550.3 48.1 L552.6 46.8 L554.9 47.8 L557.2 47.0 L559.5 48.0 L561.8 47.6 L564.2 47.3 L566.5 48.0 L568.8 47.0 L571.1 47.0 L573.4 47.8 L575.7 48.0 L578.0 47.6 L580.3 47.2 L582.7 48.1 L585.0 47.2 L587.3 46.8 L589.6 48.5 L591.9 47.3 L594.2 47.6 L596.5 47.5 L598.8 47.5 L601.2 48.1 L603.5 48.0 L605.8 47.8 L608.1 48.2 L610.4 48.1 L612.7 46.7 L615.0 48.0 L617.3 48.2 L619.7 47.3 L622.0 47.1 L624.3 47.5 L626.6 46.6 L628.9 47.2 L631.2 47.4 L633.5 48.0 L635.8 46.6 L638.2 47.3 L640.5 46.8 L642.8 47.8 L645.1 47.9 L647.4 48.4 L649.7 48.2 L652.0 47.4 L654.3 48.5 L656.6 47.7 L659.0 47.6 L661.3 47.4 L663.6 47.3 L665.9 48.1 L668.2 47.4 L670.5 47.4 L672.8 47.5 L675.1 48.2 L677.5 47.8 L679.8 48.3 L682.1 47.9 L684.4 48.4 L686.7 48.4 L689.0 47.6 L691.3 47.2 L693.6 47.3 L696.0 48.0 L698.3 48.2 L700.6 47.8 L702.9 47.4 L705.2 47.8 L707.5 48.2 L709.8 47.0 L712.1 46.7 L714.5 47.5 L716.8 47.0 L719.1 47.7 L721.4 47.2 L723.7 47.4 L726.0 47.3 L728.3 45.1 L730.6 43.7 L732.9 39.3 L735.3 39.0 L737.6 36.8 L739.9 30.8 L742.2 31.6 L744.5 28.9 L746.8 23.2 L749.1 20.9 L751.4 29.0 L753.8 24.6 L756.1 23.5 L758.4 19.1 L760.7 21.4 L763.0 22.7 L765.3 18.8 L767.6 28.1 L769.9 28.0 L772.3 22.8 L774.6 18.1 L776.9 26.8 L779.2 26.8 L781.5 26.5 L783.8 26.6 L786.1 19.2 L788.4 30.8 L790.8 27.6 L793.1 27.5 L795.4 30.5 L797.7 36.2 L800.0 37.6 L802.3 41.1 L804.6 43.4 L806.9 48.2 L809.2 41.5 L811.6 36.9 L813.9 31.6 L816.2 34.1 L818.5 25.9 L820.8 20.7 L823.1 24.8 L825.4 22.1 L827.7 21.2 L830.1 16.6 L832.4 15.8 L834.7 15.5 L837.0 17.9 L839.3 20.2 L841.6 20.3 L843.9 9.1 L846.2 20.7 L848.6 11.9 L850.9 13.1 L853.2 22.3 L855.5 16.3 L857.8 18.1 L860.1 17.0 L862.4 19.2 L864.7 20.6 L867.1 24.6 L869.4 28.5 L871.7 22.7 L874.0 27.7 L876.3 34.4 L878.6 33.7 L880.9 40.9 L883.2 43.1 L885.5 47.9 L887.9 40.2 L890.2 38.1 L892.5 29.5 L894.8 30.9 L897.1 26.3 L899.4 30.5 L901.7 18.1 L904.0 15.3 L906.4 13.7 L908.7 11.9 L911.0 8.6 L913.3 2.1 L915.6 5.0 L917.9 8.6 L920.2 12.3 L922.5 3.9 L924.9 5.6 L927.2 4.3 L929.5 7.8 L931.8 7.8 L934.1 11.8 L936.4 11.9 L938.7 19.4 L941.0 7.0 L943.4 10.1 L945.7 18.8 L948.0 23.3 L950.3 23.1 L952.6 26.8 L954.9 27.6 L957.2 34.2 L959.5 34.9 L961.8 38.5 L964.2 45.0 L966.5 46.1 L968.8 43.5 L971.1 40.2 L973.4 40.7 L975.7 38.3 L978.0 35.1 L980.3 36.7 L982.7 30.7 L985.0 32.7 L987.3 27.2 L989.6 29.5 L991.9 32.1 L994.2 32.9 L996.5 28.1 L998.8 27.6 L1001.2 29.5 L1003.5 24.9 L1005.8 32.0 L1008.1 21.9 L1010.4 30.3 L1012.7 24.0 L1015.0 27.0 L1017.3 32.7 L1019.7 30.1 L1022.0 32.7 L1024.3 31.9 L1026.6 34.2 L1028.9 30.7 L1031.2 37.3 L1033.5 36.7 L1035.8 41.0 L1038.2 42.9 L1040.5 43.6 L1042.8 45.6 L1042.8 53.4 L1040.5 55.3 L1038.2 55.1 L1035.8 56.6 L1033.5 59.9 L1031.2 58.3 L1028.9 64.4 L1026.6 65.8 L1024.3 67.4 L1022.0 63.9 L1019.7 67.2 L1017.3 63.9 L1015.0 64.6 L1012.7 70.8 L1010.4 62.6 L1008.1 71.0 L1005.8 62.5 L1003.5 67.7 L1001.2 65.5 L998.8 70.8 L996.5 68.8 L994.2 61.9 L991.9 66.3 L989.6 64.2 L987.3 69.3 L985.0 62.8 L982.7 64.2 L980.3 60.3 L978.0 61.7 L975.7 59.6 L973.4 58.5 L971.1 55.9 L968.8 54.8 L966.5 52.5 L964.2 54.2 L961.8 57.8 L959.5 64.5 L957.2 63.4 L954.9 72.4 L952.6 66.6 L950.3 73.5 L948.0 72.0 L945.7 71.8 L943.4 72.8 L941.0 85.3 L938.7 75.2 L936.4 79.9 L934.1 83.6 L931.8 77.0 L929.5 83.3 L927.2 88.9 L924.9 81.5 L922.5 91.6 L920.2 77.9 L917.9 82.4 L915.6 83.0 L913.3 81.1 L911.0 76.4 L908.7 84.5 L906.4 74.1 L904.0 81.2 L901.7 76.7 L899.4 65.5 L897.1 70.6 L894.8 62.8 L892.5 64.0 L890.2 61.0 L887.9 57.6 L885.5 52.0 L883.2 55.4 L880.9 57.6 L878.6 60.8 L876.3 60.5 L874.0 65.8 L871.7 68.2 L869.4 69.0 L867.1 67.5 L864.7 69.8 L862.4 71.8 L860.1 70.9 L857.8 74.9 L855.5 73.0 L853.2 71.2 L850.9 78.4 L848.6 81.3 L846.2 70.1 L843.9 80.4 L841.6 73.0 L839.3 73.8 L837.0 79.1 L834.7 71.3 L832.4 77.3 L830.1 74.9 L827.7 66.8 L825.4 72.6 L823.1 72.5 L820.8 68.6 L818.5 70.9 L816.2 61.4 L813.9 65.9 L811.6 59.5 L809.2 55.3 L806.9 51.6 L804.6 53.9 L802.3 56.1 L800.0 60.1 L797.7 59.5 L795.4 64.1 L793.1 68.4 L790.8 63.4 L788.4 64.2 L786.1 70.3 L783.8 68.8 L781.5 68.8 L779.2 70.9 L776.9 70.0 L774.6 68.7 L772.3 67.0 L769.9 67.8 L767.6 66.5 L765.3 76.1 L763.0 68.6 L760.7 69.7 L758.4 73.3 L756.1 70.2 L753.8 75.2 L751.4 71.2 L749.1 72.1 L746.8 67.7 L744.5 66.1 L742.2 66.4 L739.9 65.3 L737.6 60.2 L735.3 59.6 L732.9 60.7 L730.6 56.1 L728.3 53.4 L726.0 52.3 L723.7 52.3 L721.4 51.9 L719.1 51.5 L716.8 52.2 L714.5 51.9 L712.1 52.7 L709.8 52.8 L707.5 51.3 L705.2 52.0 L702.9 51.9 L700.6 51.7 L698.3 51.3 L696.0 51.5 L693.6 52.1 L691.3 52.3 L689.0 51.9 L686.7 51.1 L684.4 51.5 L682.1 52.0 L679.8 51.0 L677.5 51.8 L675.1 51.5 L672.8 51.9 L670.5 51.7 L668.2 51.8 L665.9 51.3 L663.6 52.0 L661.3 52.3 L659.0 51.7 L656.6 51.6 L654.3 51.1 L652.0 52.3 L649.7 51.5 L647.4 51.6 L645.1 51.6 L642.8 52.0 L640.5 52.1 L638.2 51.8 L635.8 52.3 L633.5 51.6 L631.2 52.0 L628.9 51.8 L626.6 52.5 L624.3 52.3 L622.0 52.0 L619.7 52.2 L617.3 51.7 L615.0 51.9 L612.7 52.3 L610.4 51.2 L608.1 51.3 L605.8 51.6 L603.5 51.6 L601.2 51.4 L598.8 51.5 L596.5 51.6 L594.2 51.8 L591.9 51.9 L589.6 51.1 L587.3 52.3 L585.0 52.5 L582.7 51.3 L580.3 52.4 L578.0 51.7 L575.7 51.5 L573.4 51.4 L571.1 51.8 L568.8 52.2 L566.5 51.7 L564.2 52.2 L561.8 51.9 L559.5 51.6 L557.2 52.6 L554.9 51.9 L552.6 52.0 L550.3 51.3 L548.0 51.7 L545.7 51.5 L543.4 51.3 L541.0 51.9 L538.7 51.1 L536.4 52.4 L534.1 50.2 L531.8 53.5 L529.5 55.3 L527.2 57.0 L524.9 59.9 L522.5 60.9 L520.2 64.9 L517.9 64.4 L515.6 64.1 L513.3 69.6 L511.0 61.7 L508.7 68.3 L506.4 68.6 L504.0 68.2 L501.7 66.4 L499.4 70.2 L497.1 65.8 L494.8 72.7 L492.5 71.5 L490.2 72.7 L487.9 75.1 L485.5 73.0 L483.2 79.0 L480.9 69.2 L478.6 76.5 L476.3 77.8 L474.0 70.1 L471.7 71.0 L469.4 71.2 L467.1 70.4 L464.7 72.7 L462.4 75.8 L460.1 74.4 L457.8 70.3 L455.5 71.3 L453.2 76.6 L450.9 77.0 L448.6 71.5 L446.2 74.2 L443.9 74.4 L441.6 65.3 L439.3 67.3 L437.0 71.1 L434.7 71.5 L432.4 65.5 L430.1 67.2 L427.7 65.2 L425.4 60.9 L423.1 63.3 L420.8 61.9 L418.5 65.8 L416.2 59.3 L413.9 58.5 L411.6 57.4 L409.2 56.8 L406.9 54.8 L404.6 51.8 L402.3 54.7 L400.0 56.0 L397.7 56.3 L395.4 58.7 L393.1 63.1 L390.8 59.2 L388.4 65.9 L386.1 62.8 L383.8 63.1 L381.5 64.2 L379.2 67.3 L376.9 67.4 L374.6 65.9 L372.3 67.5 L369.9 68.0 L367.6 70.9 L365.3 66.9 L363.0 73.3 L360.7 67.4 L358.4 69.8 L356.1 71.3 L353.8 63.7 L351.4 66.9 L349.1 65.3 L346.8 69.2 L344.5 67.3 L342.2 70.1 L339.9 66.3 L337.6 64.6 L335.3 59.3 L332.9 62.5 L330.6 60.9 L328.3 58.7 L326.0 57.8 L323.7 54.0 L321.4 51.8 L319.1 57.5 L316.8 60.9 L314.5 62.4 L312.1 66.8 L309.8 70.5 L307.5 67.4 L305.2 72.0 L302.9 75.7 L300.6 81.8 L298.3 81.7 L296.0 77.4 L293.6 74.2 L291.3 83.7 L289.0 80.9 L286.7 78.8 L284.4 76.7 L282.1 84.0 L279.8 78.2 L277.5 88.4 L275.1 79.2 L272.8 81.0 L270.5 70.9 L268.2 78.0 L265.9 75.7 L263.6 86.6 L261.3 80.1 L259.0 73.7 L256.6 70.2 L254.3 73.9 L252.0 64.7 L249.7 68.8 L247.4 65.1 L245.1 61.2 L242.8 62.4 L240.5 59.6 L238.2 52.4 L235.8 54.2 L233.5 59.1 L231.2 60.8 L228.9 63.5 L226.6 63.2 L224.3 66.8 L222.0 68.6 L219.7 76.9 L217.3 68.0 L215.0 70.9 L212.7 76.2 L210.4 78.6 L208.1 72.6 L205.8 82.6 L203.5 71.9 L201.2 80.5 L198.8 81.7 L196.5 74.4 L194.2 71.7 L191.9 75.1 L189.6 77.5 L187.3 75.8 L185.0 68.1 L182.7 70.9 L180.3 71.0 L178.0 72.2 L175.7 69.0 L173.4 71.1 L171.1 70.2 L168.8 67.2 L166.5 62.7 L164.2 63.1 L161.8 61.9 L159.5 62.0 L157.2 56.2 L154.9 51.3 L152.6 53.9 L150.3 56.9 L148.0 59.4 L145.7 59.9 L143.4 62.3 L141.0 61.8 L138.7 65.1 L136.4 67.0 L134.1 65.1 L131.8 69.2 L129.5 69.4 L127.2 70.4 L124.9 69.9 L122.5 73.0 L120.2 73.1 L117.9 73.3 L115.6 76.2 L113.3 83.0 L111.0 73.6 L108.7 76.2 L106.4 75.2 L104.0 73.8 L101.7 86.6 L99.4 81.8 L97.1 77.5 L94.8 77.6 L92.5 81.0 L90.2 84.8 L87.9 77.7 L85.5 87.9 L83.2 81.0 L80.9 77.2 L78.6 80.6 L76.3 80.9 L74.0 73.2 L71.7 88.0 L69.4 88.6 L67.1 81.2 L64.7 85.0 L62.4 79.9 L60.1 76.2 L57.8 74.5 L55.5 74.1 L53.2 76.6 L50.9 75.4 L48.6 79.7 L46.2 77.6 L43.9 74.9 L41.6 68.3 L39.3 76.3 L37.0 78.7 L34.7 73.7 L32.4 74.6 L30.1 66.3 L27.7 72.3 L25.4 74.3 L23.1 74.9 L20.8 66.1 L18.5 65.8 L16.2 66.5 L13.9 62.1 L11.6 60.9 L9.2 58.8 L6.9 57.7 L4.6 56.1 L2.3 55.7 L0.0 50.0 Z" fill="#1F2328"></path>
+          <path d="M1045.1 19.2 L1047.4 19.1 L1049.7 19.4 L1052.0 20.0 L1054.3 23.4 L1056.6 22.5 L1059.0 14.0 L1061.3 6.4 L1063.6 4.5 L1065.9 4.5 L1068.2 5.6 L1070.5 1.5 L1072.8 13.8 L1075.1 1.9 L1077.5 7.9 L1079.8 19.6 L1082.1 13.1 L1084.4 18.5 L1086.7 24.2 L1089.0 21.5 L1091.3 22.2 L1093.6 17.2 L1096.0 26.9 L1098.3 17.5 L1100.6 17.1 L1102.9 9.6 L1105.2 11.9 L1107.5 17.8 L1109.8 15.1 L1112.1 15.1 L1114.5 16.6 L1116.8 14.4 L1119.1 5.3 L1121.4 6.4 L1123.7 9.3 L1126.0 4.2 L1128.3 13.6 L1130.6 10.8 L1132.9 16.6 L1135.3 16.7 L1137.6 15.8 L1139.9 17.6 L1142.2 14.4 L1144.5 25.6 L1146.8 20.7 L1149.1 22.9 L1151.4 20.5 L1153.8 15.5 L1156.1 6.4 L1158.4 12.1 L1160.7 15.5 L1163.0 17.7 L1165.3 7.2 L1167.6 12.4 L1169.9 1.0 L1172.3 11.9 L1174.6 12.0 L1176.9 7.6 L1179.2 5.2 L1181.5 16.7 L1183.8 21.1 L1186.1 26.1 L1188.4 14.4 L1190.8 21.1 L1193.1 19.4 L1195.4 17.7 L1197.7 19.7 L1200.0 48.6 L1200.0 51.0 L1197.7 70.1 L1195.4 72.9 L1193.1 72.2 L1190.8 71.0 L1188.4 72.0 L1186.1 70.4 L1183.8 75.6 L1181.5 79.3 L1179.2 87.3 L1176.9 78.6 L1174.6 76.8 L1172.3 79.9 L1169.9 81.5 L1167.6 83.7 L1165.3 82.4 L1163.0 80.7 L1160.7 74.2 L1158.4 78.4 L1156.1 84.6 L1153.8 71.3 L1151.4 67.7 L1149.1 72.0 L1146.8 76.0 L1144.5 66.5 L1142.2 77.1 L1139.9 72.9 L1137.6 75.0 L1135.3 72.3 L1132.9 75.4 L1130.6 79.0 L1128.3 77.5 L1126.0 86.3 L1123.7 80.3 L1121.4 84.5 L1119.1 91.3 L1116.8 82.4 L1114.5 81.2 L1112.1 83.6 L1109.8 79.8 L1107.5 73.8 L1105.2 81.3 L1102.9 81.8 L1100.6 71.7 L1098.3 68.8 L1096.0 71.2 L1093.6 72.9 L1091.3 78.3 L1089.0 74.1 L1086.7 74.4 L1084.4 73.5 L1082.1 72.9 L1079.8 77.2 L1077.5 83.1 L1075.1 79.5 L1072.8 80.0 L1070.5 79.1 L1068.2 86.5 L1065.9 78.0 L1063.6 86.5 L1061.3 76.0 L1059.0 80.3 L1056.6 72.5 L1054.3 70.2 L1052.0 75.0 L1049.7 78.6 L1047.4 78.5 L1045.1 80.3 Z" fill="#B4540A"></path>
+        </svg>
+        <div class="wave-words">
+          <span style="--w:12.9%"><b>no</b><em>0.000&ndash;0.284</em></span>
+          <span style="--w:20.8%"><b>sab&iacute;a</b><em>0.284&ndash;0.742</em></span>
+          <span style="--w:10.8%"><b>que</b><em>0.742&ndash;0.981</em></span>
+          <span style="--w:16.1%"><b>[pause]</b><em>0.981&ndash;1.336</em></span>
+          <span style="--w:26.4%"><b>volver&iacute;a</b><em>1.336&ndash;1.918</em></span>
+          <span class="over" style="--w:13.0%"><b>[overlap]</b><em>1.918&ndash;2.204</em></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grow grow--wide">
+    <div class="grow-head">
+      <h4>Robotics trajectories</h4>
+      <span class="mono">Rig access &middot; 44K validated rollouts</span>
+    </div>
+    <div class="art traj-scroll">
+      <div class="traj-wrap">
+        <svg viewBox="0 0 960 300" role="img" aria-label="One rollout at 50 Hz: end-effector path in the work plane with samples bunching at the grasp, tool height, gripper width and speed, with a 220 millisecond dwell at zero.">
+          <g fill="none" stroke="rgba(31,35,40,.3)" stroke-width="1">
+            <rect x="20" y="96" width="180" height="180"></rect>
+            <path d="M20 292 L950 292 M278 292 L278 298 M446 292 L446 298 M614 292 L614 298 M782 292 L782 298 M950 292 L950 298"></path>
+            <path d="M20 268 L26 268 M20 232 L26 232 M20 196 L26 196 M20 160 L26 160 M20 124 L26 124
+                     M44 276 L44 270 M80 276 L80 270 M116 276 L116 270 M152 276 L152 270 M188 276 L188 270"></path>
+          </g>
+          <path d="M40.60 250.60 L40.60 249.55 L40.25 249.90 L40.25 249.55 L39.90 249.90 L40.25 249.55 L40.25 248.85 L41.30 248.85 L41.65 248.85 L41.65 247.45 L42.70 247.45 L43.40 246.75 L44.45 245.35 L44.80 244.30 L45.50 243.60 L46.20 241.50 L47.25 240.80 L48.30 238.70 L49.70 236.60 L50.40 234.50 L52.50 232.40 L52.85 229.95 L54.25 227.50 L56.35 225.75 L57.75 222.25 L59.15 219.45 L61.60 216.65 L62.65 212.80 L65.10 210.35 L67.20 206.50 L68.60 203.70 L70.70 200.20 L72.10 197.05 L74.20 192.85 L76.30 189.70 L79.10 186.20 L81.20 182.70 L83.30 179.20 L85.40 175.00 L87.85 171.85 L89.25 168.00 L91.70 165.20 L94.50 163.10 L95.55 159.25 L98.00 156.80 L100.10 155.05 L101.50 152.25 L103.95 150.50 L105.35 149.10 L107.45 147.35 L108.85 145.25 L110.60 144.20 L112.00 142.10 L113.05 141.05 L115.15 140.00 L116.20 139.30 L116.90 138.25 L118.65 137.55 L120.40 136.50 L121.45 135.45 L122.15 135.45 L122.85 135.10 L124.25 134.40 L125.65 133.35 L126.00 134.05 L126.70 133.70 L127.75 133.35 L128.45 133.00 L129.50 132.30 L130.55 132.65 L131.25 132.65 L131.60 132.30 L131.95 132.65 L132.30 132.65 L133.70 132.30 L134.05 132.30 L134.40 131.95 L134.40 131.95 L134.75 132.65 L135.10 131.95 L135.45 132.30 L135.80 131.95 L136.15 131.60 L136.15 131.60 L136.50 132.30 L136.85 131.25 L136.85 131.25 L137.20 131.60 L137.55 131.60 L137.55 131.25 L137.90 131.95 L136.85 131.95 L137.20 131.60 L136.85 131.95 L136.85 131.95 L137.20 131.95 L137.20 131.25 L137.90 131.95 L137.20 132.30 L137.90 131.25 L136.85 131.60 L137.20 131.95 L137.55 131.95 L137.55 131.95 L137.90 131.60 L137.55 131.60 L137.20 131.25 L137.90 131.25 L137.55 131.25 L137.55 131.60 L137.90 131.60 L137.55 131.60 L137.90 131.95 L137.55 131.95 L138.60 131.95 L137.90 131.25 L138.95 131.60 L138.60 130.90 L139.65 131.25 L140.00 130.20 L140.35 129.85 L141.05 130.20 L142.10 129.85 L142.45 129.15 L143.15 129.50 L144.20 128.45 L145.25 128.45 L146.30 128.10 L147.00 127.40 L147.70 127.40 L149.10 126.70 L149.45 125.30 L151.20 124.95 L151.55 124.25 L152.25 123.90 L154.35 123.55 L155.40 122.85 L156.10 121.45 L157.50 120.75 L158.55 120.40 L159.95 119.35 L160.65 119.00 L161.70 118.30 L163.10 117.25 L164.85 116.55 L165.90 115.15 L166.95 115.50 L168.00 113.75 L169.40 113.40 L170.80 112.35 L171.85 111.30 L172.55 110.95 L173.95 109.90 L174.65 110.25 L175.35 108.50 L176.75 108.85 L176.75 107.80 L177.45 106.40 L178.85 106.75 L179.90 106.05 L180.25 105.00 L180.95 105.35 L181.65 104.65 L182.00 103.95 L183.05 102.55 L183.75 102.20 L183.75 101.85 L184.80 101.50 L185.85 100.80 L186.20 101.15 L186.20 100.80 L186.90 100.45 L186.55 100.10 L187.25 99.75 L187.95 99.75 L188.30 99.40 L188.30 98.35 L189.00 98.70 L189.70 98.00 L190.05 98.35 L189.35 97.30 L190.05 98.00 L190.40 97.30 L190.40 97.65 L190.75 96.95 L191.10 97.30 L191.45 96.95 L191.10 96.60 L191.80 96.60 L192.15 96.95 L191.10 96.25 L191.45 95.90 L191.80 96.60 L192.15 95.55 L191.45 95.90 L192.50 95.90 L191.45 96.25 L191.80 95.55 L192.15 96.60 L192.15 96.25 L191.45 95.90" fill="none" stroke="#1F2328" stroke-width="1"></path>
+          <g fill="#1F2328"><circle cx="40.60" cy="250.60" r="2"></circle><circle cx="41.65" cy="248.85" r="2"></circle><circle cx="47.25" cy="240.80" r="2"></circle><circle cx="57.75" cy="222.25" r="2"></circle><circle cx="72.10" cy="197.05" r="2"></circle><circle cx="89.25" cy="168.00" r="2"></circle><circle cx="105.35" cy="149.10" r="2"></circle><circle cx="116.90" cy="138.25" r="2"></circle><circle cx="126.00" cy="134.05" r="2"></circle><circle cx="131.95" cy="132.65" r="2"></circle><circle cx="135.45" cy="132.30" r="2"></circle><circle cx="137.55" cy="131.60" r="2"></circle><circle cx="137.20" cy="131.25" r="2"></circle><circle cx="137.90" cy="131.60" r="2"></circle><circle cx="137.90" cy="131.95" r="2"></circle><circle cx="140.35" cy="129.85" r="2"></circle><circle cx="147.00" cy="127.40" r="2"></circle><circle cx="155.40" cy="122.85" r="2"></circle><circle cx="164.85" cy="116.55" r="2"></circle><circle cx="173.95" cy="109.90" r="2"></circle><circle cx="180.25" cy="105.00" r="2"></circle><circle cx="185.85" cy="100.80" r="2"></circle><circle cx="188.30" cy="98.35" r="2"></circle><circle cx="190.75" cy="96.95" r="2"></circle><circle cx="191.80" cy="96.60" r="2"></circle><circle cx="191.45" cy="95.90" r="2"></circle></g>
+          <path d="M278.0 65.1L281.4 65.1L284.7 65.1L284.7 66.3L288.1 66.3L288.1 65.7L291.4 65.7L291.4 66.3L294.8 66.3L298.2 66.3L298.2 67.5L301.5 67.5L304.9 67.5L308.2 67.5L308.2 68.1L311.6 68.1L315.0 68.1L315.0 69.2L318.3 69.2L321.7 69.2L325.0 69.2L325.0 69.8L328.4 69.8L331.8 69.8L331.8 70.4L335.1 70.4L335.1 71.0L338.5 71.0L338.5 71.6L341.8 71.6L345.2 71.6L345.2 72.2L348.6 72.2L348.6 72.8L351.9 72.8L355.3 72.8L355.3 73.4L358.6 73.4L358.6 74.0L362.0 74.0L362.0 74.6L365.4 74.6L365.4 75.2L368.7 75.2L368.7 75.8L372.1 75.8L375.4 75.8L375.4 76.9L378.8 76.9L378.8 77.5L382.2 77.5L385.5 77.5L385.5 78.1L388.9 78.1L388.9 78.7L392.2 78.7L392.2 79.3L395.6 79.3L395.6 79.9L399.0 79.9L399.0 81.1L402.3 81.1L402.3 81.7L405.7 81.7L409.0 81.7L409.0 82.3L412.4 82.3L412.4 83.5L415.8 83.5L415.8 84.0L419.1 84.0L419.1 84.6L422.5 84.6L422.5 85.2L425.8 85.2L429.2 85.2L429.2 85.8L432.6 85.8L432.6 86.4L435.9 86.4L435.9 87.6L439.3 87.6L439.3 88.2L442.6 88.2L442.6 88.8L446.0 88.8L446.0 89.4L449.4 89.4L452.7 89.4L452.7 90.6L456.1 90.6L456.1 91.2L459.4 91.2L459.4 92.3L462.8 92.3L466.2 92.3L466.2 92.9L469.5 92.9L469.5 93.5L472.9 93.5L472.9 94.7L476.2 94.7L476.2 95.3L479.6 95.3L483.0 95.3L483.0 96.5L486.3 96.5L486.3 97.1L489.7 97.1L489.7 98.3L493.0 98.3L496.4 98.3L496.4 100.0L499.8 100.0L503.1 100.0L503.1 101.2L506.5 101.2L509.8 101.2L509.8 102.4L513.2 102.4L516.6 102.4L516.6 103.6L519.9 103.6L519.9 104.2L523.3 104.2L523.3 105.4L526.6 105.4L530.0 105.4L530.0 106.5L533.4 106.5L533.4 107.7L536.7 107.7L540.1 107.7L540.1 109.5L543.4 109.5L543.4 110.1L546.8 110.1L546.8 111.3L550.2 111.3L553.5 111.3L553.5 112.5L556.9 112.5L560.2 112.5L560.2 113.6L563.6 113.6L563.6 114.8L567.0 114.8L567.0 116.0L570.3 116.0L573.7 116.0L573.7 117.2L577.0 117.2L577.0 117.8L580.4 117.8L580.4 118.4L583.8 118.4L583.8 119.6L587.1 119.6L587.1 120.8L590.5 120.8L593.8 120.8L593.8 121.9L597.2 121.9L597.2 123.1L600.6 123.1L603.9 123.1L603.9 124.3L607.3 124.3L610.6 124.3L614.0 124.3L614.0 124.9L617.4 124.9L617.4 124.3L620.7 124.3L624.1 124.3L627.4 124.3L627.4 124.9L630.8 124.9L634.2 124.9L637.5 124.9L637.5 124.3L640.9 124.3L644.2 124.3L644.2 123.7L647.6 123.7L647.6 122.5L651.0 122.5L651.0 121.9L654.3 121.9L654.3 120.8L657.7 120.8L657.7 120.2L661.0 120.2L661.0 119.6L664.4 119.6L664.4 118.4L667.8 118.4L671.1 118.4L671.1 117.2L674.5 117.2L677.8 117.2L677.8 116.0L681.2 116.0L681.2 115.4L684.6 115.4L684.6 114.8L687.9 114.8L687.9 114.2L691.3 114.2L691.3 113.6L694.6 113.6L694.6 113.1L698.0 113.1L698.0 111.9L701.4 111.9L704.7 111.9L704.7 111.3L708.1 111.3L708.1 110.1L711.4 110.1L714.8 110.1L714.8 108.9L718.2 108.9L721.5 108.9L721.5 107.7L724.9 107.7L728.2 107.7L728.2 106.5L731.6 106.5L731.6 106.0L735.0 106.0L738.3 106.0L738.3 104.8L741.7 104.8L741.7 104.2L745.0 104.2L745.0 103.6L748.4 103.6L748.4 103.0L751.8 103.0L751.8 102.4L755.1 102.4L758.5 102.4L758.5 101.8L761.8 101.8L761.8 100.6L765.2 100.6L768.6 100.6L768.6 99.4L771.9 99.4L771.9 98.8L775.3 98.8L778.6 98.8L778.6 98.3L782.0 98.3L782.0 97.7L785.4 97.7L785.4 97.1L788.7 97.1L792.1 97.1L792.1 96.5L795.4 96.5L795.4 95.9L798.8 95.9L798.8 95.3L802.2 95.3L802.2 94.1L805.5 94.1L808.9 94.1L808.9 93.5L812.2 93.5L812.2 92.9L815.6 92.9L815.6 92.3L819.0 92.3L819.0 91.7L822.3 91.7L822.3 91.2L825.7 91.2L829.0 91.2L829.0 90.6L832.4 90.6L832.4 90.0L835.8 90.0L835.8 89.4L839.1 89.4L839.1 88.8L842.5 88.8L842.5 88.2L845.8 88.2L845.8 87.6L849.2 87.6L852.6 87.6L852.6 87.0L855.9 87.0L855.9 86.4L859.3 86.4L859.3 85.8L862.6 85.8L862.6 85.2L866.0 85.2L866.0 84.0L869.4 84.0L869.4 84.6L872.7 84.6L872.7 83.5L876.1 83.5L879.4 83.5L879.4 82.3L882.8 82.3L886.2 82.3L889.5 82.3L889.5 81.1L892.9 81.1L896.2 81.1L896.2 80.5L899.6 80.5L899.6 79.9L903.0 79.9L903.0 78.7L906.3 78.7L906.3 79.3L909.7 79.3L909.7 78.1L913.0 78.1L913.0 77.5L916.4 77.5L916.4 76.9L919.8 76.9L923.1 76.9L923.1 76.4L926.5 76.4L926.5 75.2L929.8 75.2L933.2 75.2L936.6 75.2L936.6 74.0L939.9 74.0L939.9 73.4L943.3 73.4L946.6 73.4L950.0 73.4" fill="none" stroke="#1F2328" stroke-width="1.2"></path>
+          <path d="M278.0 167.0L281.4 167.0L281.4 166.7L284.7 166.7L284.7 167.0L288.1 167.0L288.1 166.7L291.4 166.7L291.4 167.0L294.8 167.0L294.8 166.7L298.2 166.7L301.5 166.7L301.5 167.0L304.9 167.0L308.2 167.0L311.6 167.0L315.0 167.0L318.3 167.0L318.3 166.7L321.7 166.7L321.7 167.0L325.0 167.0L328.4 167.0L331.8 167.0L335.1 167.0L338.5 167.0L338.5 166.7L341.8 166.7L341.8 167.0L345.2 167.0L348.6 167.0L348.6 166.7L351.9 166.7L355.3 166.7L358.6 166.7L358.6 167.0L362.0 167.0L362.0 166.7L365.4 166.7L368.7 166.7L372.1 166.7L372.1 167.0L375.4 167.0L378.8 167.0L378.8 166.7L382.2 166.7L385.5 166.7L385.5 167.0L388.9 167.0L392.2 167.0L392.2 166.7L395.6 166.7L399.0 166.7L399.0 167.0L402.3 167.0L405.7 167.0L409.0 167.0L412.4 167.0L415.8 167.0L419.1 167.0L419.1 166.7L422.5 166.7L422.5 167.0L425.8 167.0L429.2 167.0L432.6 167.0L435.9 167.0L435.9 166.7L439.3 166.7L439.3 167.0L442.6 167.0L446.0 167.0L446.0 166.7L449.4 166.7L449.4 167.0L452.7 167.0L452.7 166.7L456.1 166.7L456.1 167.0L459.4 167.0L462.8 167.0L466.2 167.0L469.5 167.0L469.5 166.7L472.9 166.7L476.2 166.7L479.6 166.7L479.6 167.0L483.0 167.0L486.3 167.0L486.3 166.7L489.7 166.7L489.7 167.0L493.0 167.0L496.4 167.0L499.8 167.0L503.1 167.0L506.5 167.0L506.5 166.7L509.8 166.7L513.2 166.7L516.6 166.7L519.9 166.7L519.9 167.0L523.3 167.0L526.6 167.0L530.0 167.0L533.4 167.0L536.7 167.0L540.1 167.0L543.4 167.0L546.8 167.0L550.2 167.0L553.5 167.0L556.9 167.0L560.2 167.0L563.6 167.0L567.0 167.0L567.0 166.7L570.3 166.7L570.3 167.0L573.7 167.0L577.0 167.0L580.4 167.0L583.8 167.0L583.8 166.7L587.1 166.7L587.1 167.0L590.5 167.0L593.8 167.0L597.2 167.0L600.6 167.0L600.6 166.7L603.9 166.7L603.9 169.9L607.3 169.9L607.3 172.3L610.6 172.3L610.6 174.9L614.0 174.9L614.0 176.7L617.4 176.7L617.4 179.0L620.7 179.0L620.7 180.8L624.1 180.8L624.1 183.1L627.4 183.1L627.4 184.9L630.8 184.9L630.8 186.6L634.2 186.6L634.2 188.7L637.5 188.7L637.5 190.7L640.9 190.7L640.9 192.2L644.2 192.2L644.2 191.9L647.6 191.9L651.0 191.9L651.0 191.3L654.3 191.3L654.3 191.0L657.7 191.0L657.7 190.7L661.0 190.7L661.0 190.2L664.4 190.2L667.8 190.2L671.1 190.2L671.1 190.5L674.5 190.5L677.8 190.5L681.2 190.5L684.6 190.5L684.6 190.2L687.9 190.2L691.3 190.2L694.6 190.2L694.6 190.5L698.0 190.5L698.0 190.2L701.4 190.2L704.7 190.2L704.7 190.5L708.1 190.5L708.1 190.2L711.4 190.2L711.4 190.5L714.8 190.5L718.2 190.5L721.5 190.5L721.5 190.2L724.9 190.2L724.9 190.5L728.2 190.5L728.2 190.2L731.6 190.2L731.6 190.5L735.0 190.5L735.0 190.2L738.3 190.2L741.7 190.2L741.7 190.5L745.0 190.5L748.4 190.5L748.4 190.2L751.8 190.2L751.8 190.5L755.1 190.5L758.5 190.5L758.5 190.2L761.8 190.2L761.8 190.5L765.2 190.5L768.6 190.5L771.9 190.5L771.9 190.2L775.3 190.2L775.3 190.5L778.6 190.5L778.6 190.2L782.0 190.2L782.0 190.5L785.4 190.5L788.7 190.5L788.7 190.2L792.1 190.2L792.1 187.5L795.4 187.5L795.4 185.2L798.8 185.2L798.8 183.1L802.2 183.1L802.2 180.8L805.5 180.8L805.5 178.7L808.9 178.7L808.9 177.0L812.2 177.0L812.2 174.9L815.6 174.9L815.6 172.9L819.0 172.9L819.0 170.5L822.3 170.5L822.3 168.7L825.7 168.7L825.7 167.0L829.0 167.0L832.4 167.0L832.4 166.7L835.8 166.7L835.8 167.0L839.1 167.0L842.5 167.0L845.8 167.0L845.8 166.7L849.2 166.7L852.6 166.7L855.9 166.7L855.9 167.0L859.3 167.0L862.6 167.0L862.6 166.7L866.0 166.7L869.4 166.7L872.7 166.7L876.1 166.7L876.1 167.0L879.4 167.0L882.8 167.0L886.2 167.0L889.5 167.0L892.9 167.0L892.9 166.7L896.2 166.7L899.6 166.7L899.6 167.0L903.0 167.0L906.3 167.0L909.7 167.0L909.7 166.7L913.0 166.7L913.0 167.0L916.4 167.0L919.8 167.0L923.1 167.0L926.5 167.0L929.8 167.0L933.2 167.0L933.2 166.7L936.6 166.7L939.9 166.7L943.3 166.7L943.3 167.0L946.6 167.0L950.0 167.0" fill="none" stroke="#1F2328" stroke-width="1.2"></path>
+          <path d="M278.0 288.0L278.0 287.1L281.4 287.1L281.4 286.1L284.7 286.1L284.7 285.2L288.1 285.2L288.1 282.4L291.4 282.4L291.4 281.5L294.8 281.5L294.8 279.6L298.2 279.6L298.2 278.7L301.5 278.7L301.5 275.9L304.9 275.9L304.9 274.9L308.2 274.9L308.2 274.0L311.6 274.0L311.6 271.2L315.0 271.2L315.0 269.3L318.3 269.3L318.3 267.5L321.7 267.5L321.7 265.6L325.0 265.6L325.0 263.7L328.4 263.7L328.4 262.8L331.8 262.8L331.8 260.0L335.1 260.0L335.1 259.1L338.5 259.1L338.5 257.2L341.8 257.2L341.8 255.3L345.2 255.3L345.2 254.4L348.6 254.4L348.6 252.5L351.9 252.5L351.9 250.7L355.3 250.7L355.3 249.7L358.6 249.7L358.6 248.8L362.0 248.8L362.0 246.9L365.4 246.9L365.4 246.0L368.7 246.0L368.7 245.1L372.1 245.1L372.1 243.2L375.4 243.2L375.4 242.3L378.8 242.3L382.2 242.3L382.2 240.4L385.5 240.4L385.5 241.3L388.9 241.3L388.9 240.4L392.2 240.4L392.2 239.5L395.6 239.5L395.6 238.5L399.0 238.5L399.0 237.6L402.3 237.6L402.3 238.5L405.7 238.5L409.0 238.5L409.0 237.6L412.4 237.6L412.4 239.5L415.8 239.5L415.8 241.3L419.1 241.3L419.1 242.3L422.5 242.3L422.5 244.1L425.8 244.1L425.8 245.1L429.2 245.1L429.2 246.9L432.6 246.9L432.6 248.8L435.9 248.8L435.9 249.7L439.3 249.7L439.3 250.7L442.6 250.7L442.6 252.5L446.0 252.5L446.0 253.5L449.4 253.5L449.4 254.4L452.7 254.4L452.7 256.3L456.1 256.3L459.4 256.3L459.4 258.1L462.8 258.1L462.8 259.1L466.2 259.1L466.2 260.0L469.5 260.0L469.5 261.9L472.9 261.9L472.9 262.8L476.2 262.8L476.2 263.7L479.6 263.7L479.6 265.6L483.0 265.6L486.3 265.6L486.3 267.5L489.7 267.5L493.0 267.5L493.0 269.3L496.4 269.3L496.4 270.3L499.8 270.3L503.1 270.3L503.1 271.2L506.5 271.2L506.5 273.1L509.8 273.1L513.2 273.1L513.2 274.0L516.6 274.0L516.6 274.9L519.9 274.9L519.9 275.9L523.3 275.9L526.6 275.9L526.6 277.7L530.0 277.7L533.4 277.7L533.4 278.7L536.7 278.7L536.7 279.6L540.1 279.6L540.1 280.5L543.4 280.5L543.4 281.5L546.8 281.5L550.2 281.5L550.2 282.4L553.5 282.4L553.5 283.3L556.9 283.3L560.2 283.3L560.2 284.3L563.6 284.3L567.0 284.3L567.0 285.2L570.3 285.2L570.3 286.1L573.7 286.1L577.0 286.1L577.0 287.1L580.4 287.1L583.8 287.1L583.8 286.1L587.1 286.1L587.1 287.1L590.5 287.1L590.5 288.0L593.8 288.0L593.8 287.1L597.2 287.1L597.2 288.0L600.6 288.0L603.9 288.0L607.3 288.0L610.6 288.0L614.0 288.0L617.4 288.0L617.4 287.1L620.7 287.1L620.7 288.0L624.1 288.0L624.1 287.1L627.4 287.1L627.4 288.0L630.8 288.0L634.2 288.0L637.5 288.0L640.9 288.0L644.2 288.0L644.2 286.1L647.6 286.1L647.6 285.2L651.0 285.2L651.0 283.3L654.3 283.3L654.3 281.5L657.7 281.5L657.7 279.6L661.0 279.6L661.0 278.7L664.4 278.7L664.4 276.8L667.8 276.8L667.8 274.9L671.1 274.9L671.1 272.1L674.5 272.1L674.5 271.2L677.8 271.2L677.8 269.3L681.2 269.3L681.2 268.4L684.6 268.4L684.6 265.6L687.9 265.6L687.9 263.7L691.3 263.7L691.3 262.8L694.6 262.8L694.6 261.9L698.0 261.9L698.0 259.1L701.4 259.1L701.4 257.2L704.7 257.2L708.1 257.2L708.1 254.4L711.4 254.4L711.4 253.5L714.8 253.5L714.8 251.6L718.2 251.6L718.2 250.7L721.5 250.7L721.5 249.7L724.9 249.7L724.9 248.8L728.2 248.8L728.2 247.9L731.6 247.9L731.6 246.9L735.0 246.9L735.0 246.0L738.3 246.0L738.3 245.1L741.7 245.1L745.0 245.1L745.0 244.1L748.4 244.1L751.8 244.1L755.1 244.1L755.1 243.2L758.5 243.2L758.5 242.3L761.8 242.3L765.2 242.3L765.2 244.1L768.6 244.1L768.6 245.1L771.9 245.1L771.9 246.9L775.3 246.9L775.3 247.9L778.6 247.9L778.6 248.8L782.0 248.8L782.0 249.7L785.4 249.7L785.4 251.6L788.7 251.6L788.7 252.5L792.1 252.5L792.1 253.5L795.4 253.5L795.4 254.4L798.8 254.4L802.2 254.4L802.2 257.2L805.5 257.2L808.9 257.2L808.9 259.1L812.2 259.1L815.6 259.1L815.6 260.9L819.0 260.9L819.0 261.9L822.3 261.9L825.7 261.9L825.7 264.7L829.0 264.7L832.4 264.7L832.4 265.6L835.8 265.6L835.8 266.5L839.1 266.5L839.1 267.5L842.5 267.5L842.5 269.3L845.8 269.3L845.8 268.4L849.2 268.4L849.2 270.3L852.6 270.3L855.9 270.3L855.9 272.1L859.3 272.1L859.3 273.1L862.6 273.1L862.6 274.0L866.0 274.0L866.0 274.9L869.4 274.9L869.4 275.9L872.7 275.9L872.7 276.8L876.1 276.8L876.1 277.7L879.4 277.7L879.4 276.8L882.8 276.8L882.8 278.7L886.2 278.7L889.5 278.7L889.5 279.6L892.9 279.6L896.2 279.6L896.2 281.5L899.6 281.5L899.6 282.4L903.0 282.4L906.3 282.4L906.3 283.3L909.7 283.3L913.0 283.3L913.0 284.3L916.4 284.3L919.8 284.3L919.8 286.1L923.1 286.1L926.5 286.1L929.8 286.1L933.2 286.1L933.2 288.0L936.6 288.0L936.6 287.1L939.9 287.1L943.3 287.1L943.3 288.0L946.6 288.0L950.0 288.0" fill="none" stroke="#1F2328" stroke-width="1.2"></path>
+          <g stroke="rgba(31,35,40,.5)" stroke-width="1.2" fill="none">
+            <path d="M614 52 L614 288" stroke-dasharray="3 4"></path>
+          </g>
+          <circle cx="136" cy="132" r="4" fill="#1F2328"></circle>
+          <circle cx="614" cy="128" r="4" fill="#1F2328"></circle>
+        </svg>
+        <span class="tl t0">X&#8211;Y work plane &middot; 20 mm grid</span>
+        <span class="tl t1">Tool height Z</span>
+        <span class="tl t2">Gripper width</span>
+        <span class="tl t3">Speed |v|</span>
+        <span class="tl grasp">Grasp &middot; 220 ms dwell</span>
+      </div>
+      <div class="traj-axis">
+        <span>0</span><span>1</span><span>2</span><span>3</span><span>4 s</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="grow grow--doc">
+    <div class="grow-head">
+      <h4>Finance and legal contracts</h4>
+      <span class="mono">Bar-qualified review &middot; 128K contract pages</span>
+    </div>
+    <div class="art cmap">
+      <div class="cpage" role="img" aria-label="Clause 4 of a master services agreement: sub-clauses mapped and risk-banded, with redacted blocks.">
+          <div class="crow hdr"><b></b><div class="cl"><em>MSA-0087 &middot; schedule 4</em><em>p.&nbsp;12</em></div></div>
+        <div class="crow"><b>4.1</b><div class="cl"><i style="--w:21%"></i><i style="--w:19%"></i><i style="--w:26%"></i><i style="--w:32%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:31%"></i><i style="--w:35%"></i><i style="--w:41%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:36%"></i><i class="r" style="--w:50%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:44%"></i></div></div>
+          <div class="crow gap"><b></b><div class="cl"></div></div>
+          <div class="crow lv2"><b>4.2</b><div class="cl"><i style="--w:41%"></i><i style="--w:24%"></i><i style="--w:26%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i class="r" style="--w:47%"></i><i style="--w:44%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:24%"></i><i style="--w:37%"></i></div></div>
+          <div class="crow gap"><b></b><div class="cl"></div></div>
+          <div class="crow lv3"><b>4.3</b><div class="cl"><i style="--w:38%"></i><i style="--w:39%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:28%"></i><i style="--w:30%"></i><i style="--w:27%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i class="r" style="--w:57%"></i><i style="--w:44%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:22%"></i><i style="--w:25%"></i><i style="--w:17%"></i><i style="--w:16%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:20%"></i><i style="--w:17%"></i></div></div>
+          <div class="crow gap"><b></b><div class="cl"></div></div>
+          <div class="crow"><b>4.4</b><div class="cl"><i style="--w:22%"></i><i style="--w:24%"></i><i style="--w:22%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:27%"></i><i style="--w:28%"></i><i style="--w:32%"></i><i style="--w:23%"></i></div></div>
+          <div class="crow"><b></b><div class="cl"><i style="--w:58%"></i></div></div></div>
+      </div>
+      <div class="cindex">
+        <div><b>4.1</b><span>Term and renewal</span><em>Standard</em></div>
+        <div><b>4.2</b><span>Assignment</span><em style="--band:rgba(31,35,40,.62)">Restricted</em></div>
+        <div><b>4.3</b><span>Indemnity</span><em style="--band:var(--amber)">Flagged</em></div>
+        <div><b>4.4</b><span>Data use</span><em>Standard</em></div>
+      </div>
+    </div>
+  </section>
+
+<!-- 07 ──────────────────────────────────────────────────────── -->
+<section class="beat lab">
+  <p class="mono name">Rates</p>
+  <div>
+    <p>Recruited for the credential, tested before they are paid, re-scored weekly against the same gold set.</p>
+    <table class="rates">
+      <tbody>
+        <tr class="grp"><td colspan="3"><b>Expert annotation</b><em>Per approved item, USD</em></td></tr>
+        <tr><td>Licensed clinical records</td><td class="u">Discharge summary</td><td class="r" data-stat="rate_clinical">34.00</td></tr>
+        <tr><td>Enterprise codebases</td><td class="u">Reviewed diff</td><td class="r" data-stat="rate_code">48.00</td></tr>
+        <tr><td>Multilingual audio</td><td class="u">Verified minute</td><td class="r" data-stat="rate_audio">2.40</td></tr>
+        <tr><td>Robotics trajectories</td><td class="u">Validated rollout</td><td class="r" data-stat="rate_robotics">12.50</td></tr>
+        <tr><td>Finance and legal contracts</td><td class="u">Clause-mapped page</td><td class="r" data-stat="rate_contracts">9.00</td></tr>
+        <tr class="grp"><td colspan="3"><b>Licensed data supply</b><em>Per cleared record</em></td></tr>
+        <tr><td>Sourcing, clearance, de-identification</td><td class="u">Cleared record</td><td class="r q">On request</td></tr>
+        <tr class="grp"><td colspan="3"><b>Evals and red teaming</b><em>Per scored set</em></td></tr>
+        <tr><td>Held-out set, refreshed every <span data-stat="eval_refresh">90</span> days</td><td class="u"><span data-stat="eval_items">1,240</span> items</td><td class="r q">On request</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 08 ──────────────────────────────────────────────────────── -->
+<section class="own">
+  <span class="fig" data-stat="cap_table_labs">0</span>
+  <span class="mono">Frontier labs on the cap table</span>
+  <p>No lab owns a piece of Rollout Data. Your held-out data never sits beside a competitor&rsquo;s.</p>
+</section>
+
+<footer class="foot">
+  <a href="mailto:data@rolloutdata.com">data@rolloutdata.com</a>
+  <span class="mono">Rollout Data &middot; 2026</span>
+</footer>
+
+<script>document.documentElement.classList.add('js');</script>
+<script>
+(function(){
+  'use strict';
+  try{
+    var raw = document.getElementById('illustrative');
+    if(raw){
+      var stats = JSON.parse(raw.textContent);
+      document.querySelectorAll('[data-stat]').forEach(function(el){
+        var v = stats[el.getAttribute('data-stat')];
+        if(typeof v === 'string' && v.length) el.textContent = v;
+      });
+    }
+  }catch(e){ /* markup already carries the shipped values */ }
+})();
+</script>
+</body>
+</html>
